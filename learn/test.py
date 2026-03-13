@@ -61,3 +61,9 @@ print(greet("Bob"))  # 调用函数并打印结果
 # 列表操作
 fruits.append("orange")  # 向列表添加元素
 print(fruits)  # 打印更新后的列表
+
+
+print(5 * 3)  # 打印乘法结果
+print(10 / 2)  # 打印除法结果
+print(7 - 4)  # 打印减法结果 
+print(13 / 7)  # 打印除法结果，结果为小数
