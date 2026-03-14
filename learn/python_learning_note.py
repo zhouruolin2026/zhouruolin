@@ -20,4 +20,13 @@
 # 7. python的异常处理
 # 8. python的文件操作
 
+# ## python第三方库专项学习
+
+# 1. pandas
+# 2. sql
+# 3. pytest
+# 4. log
+# 5. requests
+# 6. fastapi
+
 
