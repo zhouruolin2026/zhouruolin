@@ -49,6 +49,45 @@
       font-size: 0.8rem;
       color: #555;
     }
+    
+    /* 虚拟方向键 */
+    #dpad {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .dpad-row {
+      display: flex;
+      gap: 8px;
+    }
+    .dpad-btn {
+      width: 56px;
+      height: 56px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #2a2a4a, #1a1a2e);
+      color: #00d4aa;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+      transition: all 0.1s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dpad-btn:active {
+      transform: scale(0.95);
+      background: linear-gradient(145deg, #1a1a2e, #2a2a4a);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .dpad-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
@@ -59,6 +98,19 @@
     <div><span>速度 </span><strong id="level">1</strong></div>
   </div>
   <canvas id="canvas" width="400" height="400"></canvas>
+  
+  <!-- 虚拟方向键 -->
+  <div id="dpad">
+    <div class="dpad-row">
+      <button class="dpad-btn" id="btn-up">▲</button>
+    </div>
+    <div class="dpad-row">
+      <button class="dpad-btn" id="btn-left">◀</button>
+      <button class="dpad-btn" id="btn-down">▼</button>
+      <button class="dpad-btn" id="btn-right">▶</button>
+    </div>
+  </div>
+  
   <div id="message" class="active">按 空格键 / 点击 开始游戏</div>
   <div id="controls">↑ ↓ ← → 或 WASD 控制方向</div>
 
@@ -280,6 +332,37 @@
       }
       touchStart = null;
     }, { passive: true });
+
+    // 虚拟方向键控制
+    function setupDpad() {
+      const btns = {
+        'btn-up': { x: 0, y: -1 },
+        'btn-down': { x: 0, y: 1 },
+        'btn-left': { x: -1, y: 0 },
+        'btn-right': { x: 1, y: 0 }
+      };
+      Object.entries(btns).forEach(([id, nd]) => {
+        const btn = document.getElementById(id);
+        // 触摸
+        btn.addEventListener('touchstart', e => {
+          e.preventDefault();
+          if (!running) startGame();
+          if (nd.x !== -nextDir.x || nd.y !== -nextDir.y) nextDir = nd;
+          btn.style.transform = 'scale(0.95)';
+        }, { passive: false });
+        btn.addEventListener('touchend', e => {
+          e.preventDefault();
+          btn.style.transform = '';
+        });
+        // 鼠标
+        btn.addEventListener('mousedown', e => {
+          e.preventDefault();
+          if (!running) startGame();
+          if (nd.x !== -nextDir.x || nd.y !== -nextDir.y) nextDir = nd;
+        });
+      });
+    }
+    setupDpad();
 
     // 初始画面
     init();
