@@ -86,13 +86,13 @@ class TestPingpongGame:
     def test_restart_button_exists(self, driver, game_url):
         """测试重置按钮存在"""
         driver.get(game_url)
-        restart_btn = driver.find_element(By.XPATH, "//button[contains(text(),'重置')]")
+        restart_btn = driver.find_element(By.ID, "restartBtn")
         assert restart_btn is not None
     
     def test_click_restart_button(self, driver, game_url):
         """测试点击重置按钮"""
         driver.get(game_url)
-        restart_btn = driver.find_element(By.XPATH, "//button[contains(text(),'重置')]")
+        restart_btn = driver.find_element(By.ID, "restartBtn")
         
         # 先开始游戏
         start_btn = driver.find_element(By.ID, "gameBtn")
@@ -125,7 +125,7 @@ class TestPingpongGame:
         start_btn.click()
         time.sleep(0.3)
 
-        restart_btn = driver.find_element(By.XPATH, "//button[contains(text(),'重置')]")
+        restart_btn = driver.find_element(By.ID, "restartBtn")
         restart_btn.click()
         time.sleep(0.3)
 

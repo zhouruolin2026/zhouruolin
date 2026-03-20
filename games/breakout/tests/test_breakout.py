@@ -1,82 +1,64 @@
 """
-打砖块游戏测试
+打砖块游戏 Selenium 系统测试
 """
+import time
 import pytest
-from breakout import BreakoutGame
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+
+
+@pytest.fixture
+def driver():
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--window-size=400,700')
+    driver = webdriver.Chrome(options=chrome_options)
+    yield driver
+    driver.quit()
+
+
+@pytest.fixture
+def game_url(driver):
+    return "file:///Users/njh/.qclaw/workspace/games/breakout/index.html"
 
 
 class TestBreakoutGame:
-    """测试打砖块游戏逻辑"""
-    
-    def test_initial_state(self):
-        """测试初始状态"""
-        game = BreakoutGame()
-        assert game.ball_x == 150
-        assert game.ball_y == 350
-        assert game.paddle_x == 110
-        assert game.score == 0
-        assert game.running is False
-    
-    def test_paddle_movement(self):
-        """测试挡板移动"""
-        game = BreakoutGame()
-        game.move_paddle(-10)
-        assert game.paddle_x == 100
-        game.move_paddle(20)
-        assert game.paddle_x == 120
-    
-    def test_paddle_boundaries(self):
-        """测试挡板边界"""
-        game = BreakoutGame()
-        game.paddle_x = 0
-        game.move_paddle(-10)
-        assert game.paddle_x == 0  # 不能超出左边界
-        game.paddle_x = 220
-        game.move_paddle(10)
-        assert game.paddle_x == 220  # 不能超出右边界
-    
-    def test_ball_wall_collision(self):
-        """测试球碰墙反弹"""
-        game = BreakoutGame()
-        game.ball_x = 1
-        game.ball_dx = -3
-        game.move_ball()
-        assert game.ball_dx == 3  # 应该反弹
-    
-    def test_ball_paddle_collision(self):
-        """测试球碰挡板反弹"""
-        game = BreakoutGame()
-        game.ball_y = 380
-        game.paddle_x = 110
-        game.ball_x = 150
-        game.move_ball()
-        assert game.ball_dy == -3  # 应该反弹向上
-    
-    def test_brick_collision(self):
-        """测试球碰砖块"""
-        game = BreakoutGame()
-        # 手动设置球的位置来测试碰撞
-        game.ball_x = 25
-        game.ball_y = 30
-        initial_score = game.score
-        game.check_brick_collision()
-        assert game.score >= initial_score
-    
-    def test_reset(self):
-        """测试重置"""
-        game = BreakoutGame()
-        game.score = 100
-        game.ball_x = 200
-        game.reset()
-        assert game.score == 0
-        assert game.ball_x == 150
-    
-    def test_get_state(self):
-        """测试获取状态"""
-        game = BreakoutGame()
-        state = game.get_state()
-        assert 'ball_x' in state
-        assert 'ball_y' in state
-        assert 'paddle_x' in state
-        assert 'score' in state
-        assert 'running' in state
+    def test_page_loads(self, driver, game_url):
+        driver.get(game_url)
+        time.sleep(0.3)
+        assert "打砖块" in driver.title
+
+    def test_canvas_exists(self, driver, game_url):
+        driver.get(game_url)
+        canvas = driver.find_element(By.TAG_NAME, "canvas")
+        assert canvas is not None
+
+    def test_buttons_exist(self, driver, game_url):
+        driver.get(game_url)
+        assert driver.find_element(By.ID, "startBtn") is not None
+        assert driver.find_element(By.ID, "resetBtn") is not None
+
+    def test_start_button_starts_game(self, driver, game_url):
+        driver.get(game_url)
+        time.sleep(0.2)
+        driver.find_element(By.ID, "startBtn").click()
+        time.sleep(0.3)
+        running = driver.execute_script("return running")
+        assert running == 1
+
+    def test_reset_button_resets_state(self, driver, game_url):
+        driver.get(game_url)
+        time.sleep(0.2)
+        driver.find_element(By.ID, "startBtn").click()
+        time.sleep(0.2)
+        driver.execute_script("score = 90; x = 280; y = 180;")
+        driver.find_element(By.ID, "resetBtn").click()
+        time.sleep(0.2)
+        state = driver.execute_script("return {running, score, x, y}")
+        assert state["running"] == 0
+        assert state["score"] == 0
+        assert state["x"] == 150
+        assert state["y"] == 350

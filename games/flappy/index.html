@@ -6,23 +6,27 @@
   <title>🐦 跳跳鸟</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #0f0f23; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; color: #fff; overflow: hidden; }
-    canvas { border: 2px solid #00d4aa; border-radius: 8px; background: #70c5ce; }
-    #controls { margin-top: 8px; }
-    .btn { padding: 8px 16px; border: none; border-radius: 6px; background: #2a2a4a; color: #00d4aa; font-size: 12px; }
+    body { background: #0f0f23; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: sans-serif; color: #fff; overflow: hidden; padding: 12px; }
+    .game-shell { width: min(390px, 100vw); display: flex; flex-direction: column; align-items: center; }
+    canvas { width: min(360px, 92vw); height: auto; max-height: 70vh; border: 2px solid #00d4aa; border-radius: 10px; background: #70c5ce; }
+    #controls { margin-top: 10px; width: min(360px, 92vw); }
+    .btn { width: 100%; padding: 11px 16px; border: none; border-radius: 8px; background: #2a2a4a; color: #00d4aa; font-size: 14px; }
   </style>
 </head>
 <body>
-  <canvas id="c" width="300" height="450"></canvas>
-  <div id="controls">
-    <button class="btn" id="startBtn" onclick="toggleGame()">开始</button>
+  <div class="game-shell">
+    <canvas id="c" width="300" height="450"></canvas>
+    <div id="controls">
+      <button class="btn" id="startBtn" onclick="toggleGame()">开始</button>
+    </div>
   </div>
   <script>
     const c = document.getElementById('c'), ctx = c.getContext('2d');
     let birdY=225,birdV=0,pipes=[],score=0,best=0,running=0,paused=0,gap=150,speed=2;
     function draw(){ctx.fillStyle='#70c5ce';ctx.fillRect(0,0,300,450);ctx.fillStyle='#ded895';ctx.fillRect(0,410,300,40);ctx.fillStyle='#ffeb3b';ctx.beginPath();ctx.arc(50,birdY,15,0,7);ctx.fill();ctx.fillStyle='#000';ctx.beginPath();ctx.arc(55,birdY-5,3,0,7);ctx.fill();pipes.forEach(p=>{ctx.fillStyle='#4caf50';ctx.fillRect(p.x,0,40,p.top);ctx.fillRect(p.x,p.top+gap,40,450-p.top-gap)});ctx.fillStyle='#fff';ctx.font='20px sans-serif';ctx.fillText(score,20,40);ctx.font='12px sans-serif';ctx.fillText('最高: '+best,20,60);if(!running&&!paused){ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fillRect(0,0,300,450);ctx.fillStyle='#fff';ctx.font='24px sans-serif';ctx.textAlign='center';ctx.fillText('点击开始',150,200)}}
+    function resetState(){running=0;paused=0;birdY=225;birdV=0;pipes=[];score=0;}
     function update(){if(!running)return;birdV+=0.4;birdY+=birdV;if(birdY<15||birdY>435){running=0;ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(0,0,300,450);ctx.fillStyle='#f44336';ctx.font='28px sans-serif';ctx.textAlign='center';ctx.fillText('游戏结束',150,200);ctx.fillStyle='#fff';ctx.font='16px sans-serif';ctx.fillText('得分: '+score,150,240);ctx.fillText('最高: '+best,150,270);document.getElementById('startBtn').textContent='重新开始';return}pipes.forEach(p=>{if(p.x+40<50&&p.x+40>10){score++;if(score>best)best=score}if(p.x<-40)pipes.shift()});pipes.forEach(p=>p.x-=speed);if(pipes.length==0||pipes[pipes.length-1].x<200)pipes.push({x:300,top:Math.random()*150+50});draw();if(running)requestAnimationFrame(update)}
-    function toggleGame(){if(running||paused){running=0;paused=0;birdY=225;birdV=0;pipes=[];score=0;document.getElementById('startBtn').textContent='开始';draw()}else{running=1;update();document.getElementById('startBtn').textContent='重新开始'}}
+    function toggleGame(){if(running||paused){resetState();document.getElementById('startBtn').textContent='开始';draw()}else{resetState();running=1;document.getElementById('startBtn').textContent='重新开始';update()}}
     c.ontouchstart=e=>{if(running)birdV=-8;e.preventDefault()};
     document.onkeydown=e=>{if(e.key==' '||e.key=='ArrowUp'){if(!running)toggleGame();else birdV=-8}};
     draw();

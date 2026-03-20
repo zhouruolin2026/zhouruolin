@@ -6,10 +6,11 @@
   <title>🎮 游戏大厅</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #0f0f23; min-height: 100vh; font-family: -apple-system, sans-serif; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-    h1 { font-size: 1.8rem; color: #00d4aa; margin-bottom: 30px; }
-    .game-list { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 500px; }
-    .game-card { background: #1a1a2e; border: 2px solid #2a2a4a; border-radius: 12px; padding: 20px 30px; text-align: center; cursor: pointer; transition: all 0.3s; text-decoration: none; color: #fff; min-width: 120px; }
+    body { background: #0f0f23; min-height: 100vh; font-family: -apple-system, sans-serif; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; }
+    .hall { width: min(390px, 100vw); }
+    h1 { font-size: 1.8rem; color: #00d4aa; margin-bottom: 20px; text-align: center; }
+    .game-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .game-card { background: #1a1a2e; border: 2px solid #2a2a4a; border-radius: 12px; padding: 18px 10px; text-align: center; cursor: pointer; transition: all 0.3s; text-decoration: none; color: #fff; min-height: 132px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .game-card:hover { border-color: #00d4aa; transform: translateY(-3px); }
     .game-icon { font-size: 36px; margin-bottom: 10px; }
     .game-title { font-size: 1rem; font-weight: 600; }
@@ -17,14 +18,16 @@
   </style>
 </head>
 <body>
-  <h1>🎮 游戏大厅</h1>
-  <div class="game-list">
-    <a href="games/snake/" class="game-card"><div class="game-icon">🐍</div><div class="game-title">贪吃蛇</div><div class="game-desc">经典益智</div></a>
-    <a href="games/tetris/" class="game-card"><div class="game-icon">🧱</div><div class="game-title">俄罗斯方块</div><div class="game-desc">消除方块</div></a>
-    <a href="games/breakout/" class="game-card"><div class="game-icon">🧱</div><div class="game-title">打砖块</div><div class="game-desc">弹球打砖</div></a>
-    <a href="games/2048/" class="game-card"><div class="game-icon">🎯</div><div class="game-title">2048</div><div class="game-desc">数字合成</div></a>
-    <a href="games/pingpong/" class="game-card"><div class="game-icon">🏓</div><div class="game-title">乒乓球</div><div class="game-desc">对战电脑</div></a>
-    <a href="games/flappy/" class="game-card"><div class="game-icon">🐦</div><div class="game-title">跳跳鸟</div><div class="game-desc">虐心跳跃</div></a>
+  <div class="hall">
+    <h1>🎮 游戏大厅</h1>
+    <div class="game-list">
+      <a href="games/snake/" class="game-card"><div class="game-icon">🐍</div><div class="game-title">贪吃蛇</div><div class="game-desc">经典益智</div></a>
+      <a href="games/tetris/" class="game-card"><div class="game-icon">🧱</div><div class="game-title">俄罗斯方块</div><div class="game-desc">消除方块</div></a>
+      <a href="games/breakout/" class="game-card"><div class="game-icon">🧱</div><div class="game-title">打砖块</div><div class="game-desc">弹球打砖</div></a>
+      <a href="games/2048/" class="game-card"><div class="game-icon">🎯</div><div class="game-title">2048</div><div class="game-desc">数字合成</div></a>
+      <a href="games/pingpong/" class="game-card"><div class="game-icon">🏓</div><div class="game-title">乒乓球</div><div class="game-desc">对战电脑</div></a>
+      <a href="games/flappy/" class="game-card"><div class="game-icon">🐦</div><div class="game-title">跳跳鸟</div><div class="game-desc">虐心跳跃</div></a>
+    </div>
   </div>
 </body>
 </html>

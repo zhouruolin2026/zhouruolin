@@ -163,3 +163,27 @@ class TestFlappyBirdGame:
         )
         assert state["running"] == 0
         assert state["btnText"] == "重新开始"
+
+    def test_restart_after_game_over_starts_again(self, driver, game_url):
+        """测试结束后点击重新开始可重新进入运行状态"""
+        driver.get(game_url)
+        time.sleep(0.3)
+
+        driver.execute_script(
+            """
+            window.requestAnimationFrame = function(){};
+            running = 1;
+            birdY = 500;
+            birdV = 0;
+            update();
+            """
+        )
+        button = driver.find_element(By.ID, "startBtn")
+        assert button.text == "重新开始"
+
+        button.click()
+        time.sleep(0.2)
+        state = driver.execute_script("return {running, birdY, score, pipesLen: pipes.length}")
+        assert state["running"] == 1
+        assert 225 <= state["birdY"] <= 226
+        assert state["score"] == 0

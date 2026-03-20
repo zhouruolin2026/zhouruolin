@@ -53,74 +53,86 @@ class TestTetrisGame:
     def test_start_button_exists(self, driver, game_url):
         driver.get(game_url)
         time.sleep(0.5)
-        buttons = driver.find_elements(By.TAG_NAME, "button")
-        assert len(buttons) > 0
+        button = driver.find_element(By.ID, "startBtn")
+        assert button is not None
     
     # 5. 旋转按钮存在测试
     def test_rotate_button_exists(self, driver, game_url):
         driver.get(game_url)
         time.sleep(0.5)
-        button = driver.find_element(By.XPATH, "//button[contains(text(),'旋转')]")
+        button = driver.find_element(By.ID, "rotateBtn")
         assert button is not None
     
     # 6. 左移按钮存在测试
     def test_left_button_exists(self, driver, game_url):
         driver.get(game_url)
         time.sleep(0.5)
-        button = driver.find_element(By.XPATH, "//button[contains(text(),'左')]")
+        button = driver.find_element(By.ID, "leftBtn")
         assert button is not None
     
     # 7. 右移按钮存在测试
     def test_right_button_exists(self, driver, game_url):
         driver.get(game_url)
         time.sleep(0.5)
-        button = driver.find_element(By.XPATH, "//button[contains(text(),'右')]")
+        button = driver.find_element(By.ID, "rightBtn")
         assert button is not None
     
     # 8. 下落按钮存在测试
     def test_drop_button_exists(self, driver, game_url):
         driver.get(game_url)
         time.sleep(0.5)
-        button = driver.find_element(By.XPATH, "//button[contains(text(),'下落')]")
+        button = driver.find_element(By.ID, "dropBtn")
+        assert button is not None
+
+    def test_restart_button_exists(self, driver, game_url):
+        driver.get(game_url)
+        time.sleep(0.5)
+        button = driver.find_element(By.ID, "restartBtn")
         assert button is not None
     
     # 9. 点击开始按钮测试
     def test_click_start_button(self, driver, game_url):
         driver.get(game_url)
         time.sleep(0.5)
-        button = driver.find_element(By.XPATH, "//button[contains(text(),'开始')]")
+        button = driver.find_element(By.ID, "startBtn")
         button.click()
         time.sleep(0.3)
-        # 开始后按钮应该变成"重新开始"
+        running = driver.execute_script("return running")
+        assert running == 1
     
     # 10. 虚拟按键功能测试
     def test_virtual_buttons_work(self, driver, game_url):
         driver.get(game_url)
         time.sleep(0.5)
         # 点击开始
-        start_btn = driver.find_element(By.XPATH, "//button[contains(text(),'开始')]")
+        start_btn = driver.find_element(By.ID, "startBtn")
         start_btn.click()
         time.sleep(0.5)
-        
+
+        before = driver.execute_script("return {x: piece.x, y: piece.y}")
+
         # 点击旋转
-        rotate_btn = driver.find_element(By.XPATH, "//button[contains(text(),'旋转')]")
+        rotate_btn = driver.find_element(By.ID, "rotateBtn")
         rotate_btn.click()
         time.sleep(0.2)
-        
+
         # 点击左
-        left_btn = driver.find_element(By.XPATH, "//button[contains(text(),'左')]")
+        left_btn = driver.find_element(By.ID, "leftBtn")
         left_btn.click()
         time.sleep(0.2)
-        
+
         # 点击右
-        right_btn = driver.find_element(By.XPATH, "//button[contains(text(),'右')]")
+        right_btn = driver.find_element(By.ID, "rightBtn")
         right_btn.click()
         time.sleep(0.2)
-        
+
         # 点击下落
-        drop_btn = driver.find_element(By.XPATH, "//button[contains(text(),'下落')]")
+        drop_btn = driver.find_element(By.ID, "dropBtn")
         drop_btn.click()
         time.sleep(0.2)
+
+        after = driver.execute_script("return {x: piece.x, y: piece.y}")
+        assert after["y"] >= before["y"]
     
     # 11. 键盘控制测试
     def test_keyboard_controls(self, driver, game_url):
@@ -156,7 +168,7 @@ class TestTetrisGame:
         """测试开始后进入运行态"""
         driver.get(game_url)
         time.sleep(0.3)
-        start_btn = driver.find_element(By.XPATH, "//button[contains(text(),'开始')]")
+        start_btn = driver.find_element(By.ID, "startBtn")
         start_btn.click()
         time.sleep(0.3)
         running = driver.execute_script("return running")
@@ -166,7 +178,7 @@ class TestTetrisGame:
         """测试方向键可移动方块"""
         driver.get(game_url)
         time.sleep(0.3)
-        driver.find_element(By.XPATH, "//button[contains(text(),'开始')]").click()
+        driver.find_element(By.ID, "startBtn").click()
         time.sleep(0.3)
         before_x = driver.execute_script("return piece.x")
         body = driver.find_element(By.TAG_NAME, "body")
@@ -174,3 +186,16 @@ class TestTetrisGame:
         time.sleep(0.2)
         after_x = driver.execute_script("return piece.x")
         assert after_x >= before_x
+
+    def test_restart_button_resets_state(self, driver, game_url):
+        driver.get(game_url)
+        time.sleep(0.3)
+        driver.find_element(By.ID, "startBtn").click()
+        time.sleep(0.3)
+        driver.find_element(By.ID, "dropBtn").click()
+        time.sleep(0.2)
+        driver.find_element(By.ID, "restartBtn").click()
+        time.sleep(0.2)
+        state = driver.execute_script("return {running, score, y: piece ? piece.y : null}")
+        assert state["running"] == 0
+        assert state["score"] == 0

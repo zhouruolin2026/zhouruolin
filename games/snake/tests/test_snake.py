@@ -52,16 +52,18 @@ class TestSnakeGame:
     def test_start_button_exists(self, driver, game_url):
         driver.get(game_url)
         time.sleep(0.5)
-        buttons = driver.find_elements(By.TAG_NAME, "button")
-        assert len(buttons) > 0
+        button = driver.find_element(By.ID, "startBtn")
+        assert button is not None
     
     # 5. 点击开始按钮测试
     def test_click_start_button(self, driver, game_url):
         driver.get(game_url)
         time.sleep(0.5)
-        # 查找包含"开始"文字的按钮
-        button = driver.find_element(By.XPATH, "//button[contains(text(),'开始')]")
-        assert button is not None
+        button = driver.find_element(By.ID, "startBtn")
+        button.click()
+        time.sleep(0.3)
+        running = driver.execute_script("return window.__snakeState().running")
+        assert running == 1
     
     # 6. 键盘控制测试
     def test_keyboard_controls(self, driver, game_url):

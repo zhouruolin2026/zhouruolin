@@ -6,17 +6,20 @@
   <title>🏓 乒乓球</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #0f0f23; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; color: #fff; overflow: hidden; }
-    canvas { border: 2px solid #00d4aa; border-radius: 8px; background: #1a1a2e; }
-    #controls { margin-top: 8px; }
-    .btn { padding: 8px 16px; border: none; border-radius: 6px; background: #2a2a4a; color: #00d4aa; font-size: 12px; }
+    body { background: #0f0f23; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: sans-serif; color: #fff; overflow: hidden; padding: 12px; }
+    .game-shell { width: min(390px, 100vw); display: flex; flex-direction: column; align-items: center; }
+    canvas { width: min(360px, 92vw); height: auto; max-height: 70vh; border: 2px solid #00d4aa; border-radius: 8px; background: #1a1a2e; }
+    #controls { margin-top: 10px; width: min(360px, 92vw); display: flex; gap: 8px; }
+    .btn { flex: 1; padding: 11px 12px; border: none; border-radius: 8px; background: #2a2a4a; color: #00d4aa; font-size: 14px; }
   </style>
 </head>
 <body>
-  <canvas id="c" width="300" height="400"></canvas>
-  <div id="controls">
-    <button class="btn" onclick="toggleGame()" id="gameBtn">开始</button>
-    <button class="btn" onclick="restart()">重置</button>
+  <div class="game-shell">
+    <canvas id="c" width="300" height="400"></canvas>
+    <div id="controls">
+      <button class="btn" onclick="toggleGame()" id="gameBtn">开始</button>
+      <button class="btn" onclick="restart()" id="restartBtn">重置</button>
+    </div>
   </div>
   <script>
     const c = document.getElementById('c'), ctx = c.getContext('2d');
