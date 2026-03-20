@@ -253,20 +253,30 @@
 
     // 触摸滑动控制（移动端）
     let touchStart = null;
+    const SWIPE_THRESHOLD = 30; // 滑动阈值，避免误触
     canvas.addEventListener('touchstart', e => {
       touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
       if (!running) startGame();
     }, { passive: true });
+    canvas.addEventListener('touchmove', e => {
+      e.preventDefault(); // 防止页面滚动
+    }, { passive: false });
     canvas.addEventListener('touchend', e => {
-      if (!touchStart) return;
+      if (!touchStart || !running) return;
       const dx = e.changedTouches[0].clientX - touchStart.x;
       const dy = e.changedTouches[0].clientY - touchStart.y;
+      // 滑动距离太小时忽略
+      if (Math.abs(dx) < SWIPE_THRESHOLD && Math.abs(dy) < SWIPE_THRESHOLD) {
+        touchStart = null;
+        return;
+      }
+      // 使用 nextDir 判断，避免快速连续滑动时方向错乱
       if (Math.abs(dx) > Math.abs(dy)) {
         const nd = dx > 0 ? { x: 1, y: 0 } : { x: -1, y: 0 };
-        if (nd.x !== -dir.x) nextDir = nd;
+        if (nd.x !== -nextDir.x || nd.y !== -nextDir.y) nextDir = nd;
       } else {
         const nd = dy > 0 ? { x: 0, y: 1 } : { x: 0, y: -1 };
-        if (nd.y !== -dir.y) nextDir = nd;
+        if (nd.x !== -nextDir.x || nd.y !== -nextDir.y) nextDir = nd;
       }
       touchStart = null;
     }, { passive: true });
