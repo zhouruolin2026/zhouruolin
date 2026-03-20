@@ -5,6 +5,7 @@ import pytest
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 
 
@@ -66,3 +67,99 @@ class TestFlappyBirdGame:
         text = button.text
         # 初始应该是"开始"
         assert text == "开始" or text == "重新开始"
+
+    def test_click_start_enters_running_state(self, driver, game_url):
+        """测试点击开始后进入运行状态"""
+        driver.get(game_url)
+        time.sleep(0.3)
+        button = driver.find_element(By.ID, "startBtn")
+        button.click()
+        time.sleep(0.3)
+
+        running = driver.execute_script("return running")
+        assert running == 1
+        assert button.text == "重新开始"
+
+    def test_click_restart_resets_game_state(self, driver, game_url):
+        """测试再次点击会重置游戏状态"""
+        driver.get(game_url)
+        time.sleep(0.3)
+        button = driver.find_element(By.ID, "startBtn")
+        button.click()
+        time.sleep(0.3)
+        button.click()
+        time.sleep(0.3)
+
+        state = driver.execute_script(
+            "return {running, paused, birdY, birdV, score, pipesLen: pipes.length};"
+        )
+        assert state["running"] == 0
+        assert state["paused"] == 0
+        assert state["birdY"] == 225
+        assert state["birdV"] == 0
+        assert state["score"] == 0
+        assert state["pipesLen"] == 0
+        assert button.text == "开始"
+
+    def test_update_generates_pipe(self, driver, game_url):
+        """测试 update 会生成管道"""
+        driver.get(game_url)
+        time.sleep(0.3)
+
+        pipe_count = driver.execute_script(
+            """
+            window.requestAnimationFrame = function(){};
+            running = 1;
+            pipes = [];
+            birdY = 225;
+            birdV = 0;
+            update();
+            return pipes.length;
+            """
+        )
+        assert pipe_count >= 1
+
+    def test_touch_flap_sets_negative_velocity(self, driver, game_url):
+        """测试触摸时小鸟上跳（速度变负）"""
+        driver.get(game_url)
+        time.sleep(0.3)
+
+        bird_v = driver.execute_script(
+            """
+            running = 1;
+            birdV = 0;
+            c.ontouchstart({preventDefault: function(){}});
+            return birdV;
+            """
+        )
+        assert bird_v == -8
+
+    def test_space_key_starts_game(self, driver, game_url):
+        """测试空格键可启动游戏"""
+        driver.get(game_url)
+        time.sleep(0.3)
+
+        body = driver.find_element(By.TAG_NAME, "body")
+        body.send_keys(Keys.SPACE)
+        time.sleep(0.3)
+
+        running = driver.execute_script("return running")
+        assert running == 1
+
+    def test_out_of_bounds_ends_game(self, driver, game_url):
+        """测试越界会结束游戏"""
+        driver.get(game_url)
+        time.sleep(0.3)
+
+        state = driver.execute_script(
+            """
+            window.requestAnimationFrame = function(){};
+            running = 1;
+            birdY = 500;
+            birdV = 0;
+            update();
+            return {running, btnText: document.getElementById('startBtn').textContent};
+            """
+        )
+        assert state["running"] == 0
+        assert state["btnText"] == "重新开始"
