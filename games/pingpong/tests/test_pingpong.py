@@ -117,3 +117,21 @@ class TestPingpongGame:
         
         start_btn = driver.find_element(By.ID, "gameBtn")
         assert start_btn.text == "暂停"
+
+    def test_restart_resets_runtime_state(self, driver, game_url):
+        """测试重置后关键运行状态被恢复"""
+        driver.get(game_url)
+        start_btn = driver.find_element(By.ID, "gameBtn")
+        start_btn.click()
+        time.sleep(0.3)
+
+        restart_btn = driver.find_element(By.XPATH, "//button[contains(text(),'重置')]")
+        restart_btn.click()
+        time.sleep(0.3)
+
+        state = driver.execute_script("return {running, paused, x, y, score}")
+        assert state["running"] == 0
+        assert state["paused"] == 0
+        assert state["x"] == 150
+        assert state["y"] == 200
+        assert state["score"] == 0

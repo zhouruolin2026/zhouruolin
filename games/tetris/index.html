@@ -16,7 +16,7 @@
 </head>
 <body>
   <h1>🧱 俄罗斯方块</h1>
-  <canvas id="c" width="240" height="400"></canvas>
+  <canvas id="c" width="160" height="400"></canvas>
   <div id="score">得分: <span>0</span></div>
   <div id="controls">
     <button class="btn" onclick="start()">开始</button>
@@ -28,20 +28,20 @@
   </div>
   <script>
     const c = document.getElementById('c'), ctx = c.getContext('2d');
-    const COLS = 8, ROWS = 20, CELL = 30, OFFSET_X = 0, OFFSET_Y = 0;
+    const COLS = 8, ROWS = 20, CELL = 20, OFFSET_X = 0, OFFSET_Y = 0;
     const SHAPES = [[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]]];
     const COLORS = ['#00f5ff','#ffeb3b','#9c27b0','#4caf50','#f44336','#2196f3','#ff9800'];
     let board = [], piece = null, nextPiece = null, score = 0, running = 0, interval = null;
     function init() { board = Array(ROWS).fill().map(() => Array(COLS).fill(0)); score = 0; document.querySelector('#score span').textContent = 0; nextPiece = createPiece(); spawn(); }
     function createPiece() { const i = Math.floor(Math.random() * SHAPES.length); return { shape: SHAPES[i].map(r => [...r]), color: COLORS[i], x: Math.floor(COLS / 2) - 1, y: 0 }; }
-    function spawn() { piece = nextPiece; nextPiece = createPiece(); if (collide(0, 0)) { running = 0; clearInterval(interval); ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, 240, 400); ctx.fillStyle = '#f44336'; ctx.font = '24px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('游戏结束', 120, 180); } }
+    function spawn() { piece = nextPiece; nextPiece = createPiece(); if (collide(0, 0)) { running = 0; clearInterval(interval); ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, c.width, c.height); ctx.fillStyle = '#f44336'; ctx.font = '24px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('游戏结束', c.width / 2, c.height / 2 - 20); } }
     function collide(dx, dy, shape) { shape = shape || piece.shape; for (let y = 0; y < shape.length; y++) for (let x = 0; x < shape[y].length; x++) if (shape[y][x]) { const nx = piece.x + x + dx, ny = piece.y + y + dy; if (nx < 0 || nx >= COLS || ny >= ROWS || ny >= 0 && board[ny][nx]) return true; } return false; }
     function rotate() { if (!running) return; const rotated = piece.shape[0].map((_, i) => piece.shape.map(r => r[i]).reverse()); if (!collide(0, 0, rotated)) piece.shape = rotated; draw(); }
     function move(dx, dy) { if (!running) return; if (!collide(dx, dy)) { piece.x += dx; piece.y += dy; draw(); } else if (dy > 0) { merge(); clearLines(); spawn(); draw(); } }
     function drop() { if (!running) return; while (!collide(0, 1)) piece.y++; merge(); clearLines(); spawn(); draw(); }
     function merge() { piece.shape.forEach((row, y) => row.forEach((v, x) => { if (v && piece.y + y >= 0) board[piece.y + y][piece.x + x] = piece.color; })); }
     function clearLines() { for (let y = ROWS - 1; y >= 0; y--) { if (board[y].every(v => v)) { board.splice(y, 1); board.unshift(Array(COLS).fill(0)); score += 100; document.querySelector('#score span').textContent = score; y++; } } }
-    function draw() { ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, 240, 400); board.forEach((row, y) => row.forEach((color, x) => { if (color) { ctx.fillStyle = color; ctx.fillRect(x * CELL + 1, y * CELL + 1, CELL - 2, CELL - 2); } })); if (piece) piece.shape.forEach((row, y) => row.forEach((v, x) => { if (v) { ctx.fillStyle = piece.color; ctx.fillRect((piece.x + x) * CELL + 1, (piece.y + y) * CELL + 1, CELL - 2, CELL - 2); } })); }
+    function draw() { ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, 0, c.width, c.height); board.forEach((row, y) => row.forEach((color, x) => { if (color) { ctx.fillStyle = color; ctx.fillRect(x * CELL + 1, y * CELL + 1, CELL - 2, CELL - 2); } })); if (piece) piece.shape.forEach((row, y) => row.forEach((v, x) => { if (v) { ctx.fillStyle = piece.color; ctx.fillRect((piece.x + x) * CELL + 1, (piece.y + y) * CELL + 1, CELL - 2, CELL - 2); } })); }
     function start() { if (running) return; init(); running = 1; interval = setInterval(() => { move(0, 1); }, 800); }
     function restart() { clearInterval(interval); running = 0; init(); draw(); }
     let sx, sy; c.ontouchstart = e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY }; c.ontouchend = e => { const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; if (Math.abs(dx) > Math.abs(dy)) { if (dx > 30) move(1, 0); else if (dx < -30) move(-1, 0); } else { if (dy > 30) move(0, 1); else if (dy < -30) rotate(); } if (!running) start(); }; document.onkeydown = e => { if (e.key == 'ArrowLeft') move(-1, 0); if (e.key == 'ArrowRight') move(1, 0); if (e.key == 'ArrowDown') move(0, 1); if (e.key == 'ArrowUp' || e.key == ' ') rotate(); };
