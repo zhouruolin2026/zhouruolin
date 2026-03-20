@@ -60,6 +60,14 @@
       color: #00d4aa;
       font-weight: bold;
     }
+    .stats-row {
+      font-size: 0.75rem;
+      color: #00d4aa;
+    }
+    .stats-row span {
+      color: #fff;
+      margin-left: 2px;
+    }
     #next-canvas {
       width: 80px;
       height: 80px;
@@ -119,54 +127,62 @@
       color: #4ecdc4;
     }
     
-    /* 移动端一屏显示 */
+    /* 移动端一屏显示 - 超紧凑布局 */
     @media (max-width: 500px) {
       body { 
-        padding: 5px; 
+        padding: 4px; 
         justify-content: flex-start;
         min-height: auto;
         height: 100vh;
         overflow: hidden;
       }
-      h1 { font-size: 1.1rem; margin-bottom: 4px; }
+      h1 { font-size: 1rem; margin-bottom: 2px; }
       #game-container { 
         flex-direction: row; 
         align-items: flex-start;
-        gap: 8px;
+        gap: 4px;
       }
       #side-panel { 
         flex-direction: column; 
-        gap: 6px;
-        width: 80px;
+        gap: 3px;
+        width: 65px;
       }
       .panel-box { 
         min-width: auto; 
-        padding: 6px 4px; 
-        border-radius: 6px;
+        padding: 3px 2px; 
+        border-radius: 4px;
+        border-width: 1px;
       }
-      .panel-title { font-size: 0.6rem; margin-bottom: 4px; }
-      .panel-value { font-size: 0.9rem; }
-      #next-canvas { width: 60px; height: 60px; }
-      canvas { width: 200px; height: 400px; }
+      .panel-title { font-size: 0.5rem; margin-bottom: 1px; }
+      .panel-value { font-size: 0.75rem; }
+      .stats-row { font-size: 0.6rem; padding: 4px 2px; }
+      .stats-row span { font-size: 0.7rem; }
+      #next-canvas { width: 45px; height: 45px; }
+      canvas { 
+        width: calc(100vw - 85px); 
+        max-width: 240px;
+        height: calc(100vh - 160px);
+        max-height: 480px;
+      }
       #message { 
-        margin-top: 6px; 
-        font-size: 0.75rem; 
-        min-height: 18px;
+        margin-top: 4px; 
+        font-size: 0.7rem; 
+        min-height: 16px;
       }
       #controls { 
-        margin-top: 6px; 
-        gap: 4px;
+        margin-top: 4px; 
+        gap: 3px;
       }
-      .control-row { gap: 4px; }
+      .control-row { gap: 3px; }
       .control-btn { 
-        width: 52px; 
-        height: 36px; 
-        font-size: 11px;
-        border-radius: 6px;
+        width: 48px; 
+        height: 32px; 
+        font-size: 10px;
+        border-radius: 5px;
       }
       .control-btn.wide { 
-        width: 80px; 
-        font-size: 10px;
+        width: 70px; 
+        font-size: 9px;
       }
     }
   </style>
@@ -184,17 +200,10 @@
         <div class="panel-title">下一个</div>
         <canvas id="next-canvas" width="80" height="80"></canvas>
       </div>
-      <div class="panel-box">
-        <div class="panel-title">得分</div>
-        <div class="panel-value" id="score">0</div>
-      </div>
-      <div class="panel-box">
-        <div class="panel-title">等级</div>
-        <div class="panel-value" id="level">1</div>
-      </div>
-      <div class="panel-box">
-        <div class="panel-title">行数</div>
-        <div class="panel-value" id="lines">0</div>
+      <div class="panel-box stats-row">
+        <div>分:<span id="score">0</span></div>
+        <div>级:<span id="level">1</span></div>
+        <div>行:<span id="lines">0</span></div>
       </div>
     </div>
   </div>
