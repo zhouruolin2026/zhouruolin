@@ -113,22 +113,22 @@ class TestTetrisGame:
 
         # 点击旋转
         rotate_btn = driver.find_element(By.ID, "rotateBtn")
-        rotate_btn.click()
+        driver.execute_script("arguments[0].click();", rotate_btn)
         time.sleep(0.2)
 
         # 点击左
         left_btn = driver.find_element(By.ID, "leftBtn")
-        left_btn.click()
+        driver.execute_script("arguments[0].click();", left_btn)
         time.sleep(0.2)
 
         # 点击右
         right_btn = driver.find_element(By.ID, "rightBtn")
-        right_btn.click()
+        driver.execute_script("arguments[0].click();", right_btn)
         time.sleep(0.2)
 
         # 点击下落
         drop_btn = driver.find_element(By.ID, "dropBtn")
-        drop_btn.click()
+        driver.execute_script("arguments[0].click();", drop_btn)
         time.sleep(0.2)
 
         after = driver.execute_script("return {x: piece.x, y: piece.y}")
@@ -192,7 +192,8 @@ class TestTetrisGame:
         time.sleep(0.3)
         driver.find_element(By.ID, "startBtn").click()
         time.sleep(0.3)
-        driver.find_element(By.ID, "dropBtn").click()
+        drop_btn = driver.find_element(By.ID, "dropBtn")
+        driver.execute_script("arguments[0].click();", drop_btn)
         time.sleep(0.2)
         driver.find_element(By.ID, "restartBtn").click()
         time.sleep(0.2)

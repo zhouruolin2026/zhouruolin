@@ -33,7 +33,9 @@ class TestGame2048UI:
 
     def test_buttons_exist(self, driver, game_url):
         driver.get(game_url)
-        assert driver.find_element(By.ID, "newGameBtn") is not None
+        assert driver.find_element(By.ID, "startBtn") is not None
+        assert driver.find_element(By.ID, "pauseBtn") is not None
+        assert driver.find_element(By.ID, "restartBtn") is not None
         assert driver.find_element(By.ID, "upBtn") is not None
         assert driver.find_element(By.ID, "downBtn") is not None
         assert driver.find_element(By.ID, "leftBtn") is not None
@@ -43,7 +45,7 @@ class TestGame2048UI:
         driver.get(game_url)
         time.sleep(0.3)
         driver.execute_script("score = 128; document.getElementById('s').textContent = score;")
-        driver.find_element(By.ID, "newGameBtn").click()
+        driver.find_element(By.ID, "restartBtn").click()
         time.sleep(0.2)
         score = driver.execute_script("return score")
         assert score == 0
@@ -51,6 +53,8 @@ class TestGame2048UI:
     def test_dpad_buttons_trigger_move(self, driver, game_url):
         driver.get(game_url)
         time.sleep(0.3)
+        driver.find_element(By.ID, "startBtn").click()
+        time.sleep(0.2)
         old_board = driver.execute_script("return JSON.stringify(board)")
         driver.find_element(By.ID, "leftBtn").click()
         time.sleep(0.2)

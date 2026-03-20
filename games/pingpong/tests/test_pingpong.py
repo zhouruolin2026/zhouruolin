@@ -45,43 +45,48 @@ class TestPingpongGame:
     def test_start_button_exists(self, driver, game_url):
         """测试开始按钮存在"""
         driver.get(game_url)
-        start_btn = driver.find_element(By.ID, "gameBtn")
-        assert start_btn.text == "开始"
+        start_btn = driver.find_element(By.ID, "startBtn")
+        assert start_btn is not None
     
     def test_click_start_button(self, driver, game_url):
         """测试点击开始按钮"""
         driver.get(game_url)
-        start_btn = driver.find_element(By.ID, "gameBtn")
+        start_btn = driver.find_element(By.ID, "startBtn")
         start_btn.click()
-        # 按钮应该变成"暂停"
-        assert start_btn.text == "暂停"
+        state = driver.execute_script("return {running, paused}")
+        assert state["running"] == 1
+        assert state["paused"] == 0
     
     def test_click_pause_button(self, driver, game_url):
         """测试点击暂停按钮"""
         driver.get(game_url)
         # 先开始
-        start_btn = driver.find_element(By.ID, "gameBtn")
+        start_btn = driver.find_element(By.ID, "startBtn")
         start_btn.click()
         time.sleep(0.5)
         # 再暂停
-        start_btn.click()
-        # 按钮应该变成"继续"
-        assert start_btn.text == "继续"
+        pause_btn = driver.find_element(By.ID, "pauseBtn")
+        pause_btn.click()
+        state = driver.execute_script("return {running, paused}")
+        assert state["running"] == 0
+        assert state["paused"] == 1
     
     def test_click_resume_button(self, driver, game_url):
         """测试点击继续按钮"""
         driver.get(game_url)
-        start_btn = driver.find_element(By.ID, "gameBtn")
+        start_btn = driver.find_element(By.ID, "startBtn")
         # 开始
         start_btn.click()
         time.sleep(0.5)
         # 暂停
-        start_btn.click()
+        pause_btn = driver.find_element(By.ID, "pauseBtn")
+        pause_btn.click()
         time.sleep(0.5)
         # 继续
         start_btn.click()
-        # 按钮应该变回"暂停"
-        assert start_btn.text == "暂停"
+        state = driver.execute_script("return {running, paused}")
+        assert state["running"] == 1
+        assert state["paused"] == 0
     
     def test_restart_button_exists(self, driver, game_url):
         """测试重置按钮存在"""
@@ -95,7 +100,7 @@ class TestPingpongGame:
         restart_btn = driver.find_element(By.ID, "restartBtn")
         
         # 先开始游戏
-        start_btn = driver.find_element(By.ID, "gameBtn")
+        start_btn = driver.find_element(By.ID, "startBtn")
         start_btn.click()
         time.sleep(0.5)
         
@@ -103,9 +108,9 @@ class TestPingpongGame:
         restart_btn.click()
         time.sleep(0.3)
         
-        # 开始按钮应该变回"开始"
-        start_btn = driver.find_element(By.ID, "gameBtn")
-        assert start_btn.text == "开始"
+        state = driver.execute_script("return {running, paused}")
+        assert state["running"] == 0
+        assert state["paused"] == 0
     
     def test_keyboard_controls(self, driver, game_url):
         """测试键盘控制"""
@@ -114,14 +119,15 @@ class TestPingpongGame:
         # 按空格开始
         driver.find_element(By.TAG_NAME, "body").send_keys(" ")
         time.sleep(0.3)
-        
-        start_btn = driver.find_element(By.ID, "gameBtn")
-        assert start_btn.text == "暂停"
+
+        state = driver.execute_script("return {running, paused}")
+        assert state["running"] == 1
+        assert state["paused"] == 0
 
     def test_restart_resets_runtime_state(self, driver, game_url):
         """测试重置后关键运行状态被恢复"""
         driver.get(game_url)
-        start_btn = driver.find_element(By.ID, "gameBtn")
+        start_btn = driver.find_element(By.ID, "startBtn")
         start_btn.click()
         time.sleep(0.3)
 

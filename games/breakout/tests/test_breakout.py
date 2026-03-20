@@ -39,7 +39,8 @@ class TestBreakoutGame:
     def test_buttons_exist(self, driver, game_url):
         driver.get(game_url)
         assert driver.find_element(By.ID, "startBtn") is not None
-        assert driver.find_element(By.ID, "resetBtn") is not None
+        assert driver.find_element(By.ID, "pauseBtn") is not None
+        assert driver.find_element(By.ID, "restartBtn") is not None
 
     def test_start_button_starts_game(self, driver, game_url):
         driver.get(game_url)
@@ -55,7 +56,7 @@ class TestBreakoutGame:
         driver.find_element(By.ID, "startBtn").click()
         time.sleep(0.2)
         driver.execute_script("score = 90; x = 280; y = 180;")
-        driver.find_element(By.ID, "resetBtn").click()
+        driver.find_element(By.ID, "restartBtn").click()
         time.sleep(0.2)
         state = driver.execute_script("return {running, score, x, y}")
         assert state["running"] == 0
