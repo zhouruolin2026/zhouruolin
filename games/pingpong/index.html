@@ -41,9 +41,9 @@
     function start(){if(!running){running=1;paused=0;draw();move()}}
     function pause(){if(running){paused=1;running=0;ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(0,0,300,400);ctx.fillStyle='#ffeb3b';ctx.font='30px sans-serif';ctx.textAlign='center';ctx.fillText('暂停',150,200);}}
     function resume(){if(paused){paused=0;running=1;move()}}
-    function restart(){running=0;paused=0;x=150;y=200;dx=3;dy=3;p1y=160;score=0;draw()}
+    function restart(){running=0;paused=0;x=150;y=200;dx=3;dy=3;p1y=160;score=0;document.getElementById('gameBtn').textContent='开始';draw()}
     let t=0;c.ontouchstart=e=>{t=1};c.ontouchmove=e=>{if(t){p1y=e.touches[0].clientY-c.getBoundingClientRect().top-pw/2;if(p1y<0)p1y=0;if(p1y>320)p1y=320}};c.ontouchend=e=>{t=0};
-    document.onkeydown=e=>{if(e.key=='ArrowUp'&&p1y>0)p1y-=20;if(e.key=='ArrowDown'&&p1y<320)p1y+=20;if(e.key==' ')start()};
+    document.onkeydown=e=>{if(e.key=='ArrowUp'&&p1y>0)p1y-=20;if(e.key=='ArrowDown'&&p1y<320)p1y+=20;if(e.key==' '){toggleGame();e.preventDefault()}};
     draw();
   </script>
 </body>
