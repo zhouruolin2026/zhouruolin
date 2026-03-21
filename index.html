@@ -8,7 +8,10 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #0f0f23; min-height: 100vh; font-family: -apple-system, sans-serif; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; }
     .hall { width: min(390px, 100vw); }
-    .contact { font-size: 0.9rem; color: #d5d5d5; margin-bottom: 14px; text-align: center; line-height: 1.7; }
+    .contact { margin-bottom: 14px; }
+    .contact-line { display: flex; justify-content: center; align-items: baseline; gap: 10px; line-height: 1.7; }
+    .contact-label { width: 5em; text-align: right; font-size: 0.9rem; color: #d5d5d5; }
+    .contact-value { font-size: 0.9rem; color: #d5d5d5; text-align: left; }
     h1 { font-size: 1.8rem; color: #00d4aa; margin-bottom: 20px; text-align: center; }
     .game-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .game-card { background: #1a1a2e; border: 2px solid #2a2a4a; border-radius: 12px; padding: 18px 10px; text-align: center; cursor: pointer; transition: all 0.3s; text-decoration: none; color: #fff; min-height: 132px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -20,8 +23,11 @@
 </head>
 <body>
   <div class="hall">
-    <div class="contact">我在等你　电话：15303739551（微信同号）<br>请联系我　邮箱：zhouruolin202603@126.com</div>
-    <h1>🎮 游戏大厅（持续更新）</h1>
+    <div class="contact">
+      <div class="contact-line"><span class="contact-label">我在等你</span><span class="contact-value">电话：15303739551（微信同号）</span></div>
+      <div class="contact-line"><span class="contact-label">请联系我</span><span class="contact-value">邮箱：zhouruolin202603@126.com</span></div>
+    </div>
+    <h1>🎮 游戏大厅</h1>
     <div class="game-list">
       <a href="games/snake/" class="game-card"><div class="game-icon">🐍</div><div class="game-title">贪吃蛇</div><div class="game-desc">经典益智</div></a>
       <a href="games/tetris/" class="game-card"><div class="game-icon">🧱</div><div class="game-title">俄罗斯方块</div><div class="game-desc">消除方块</div></a>

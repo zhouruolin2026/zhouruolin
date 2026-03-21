@@ -19,7 +19,7 @@
 </head>
 <body>
   <div class="game-shell">
-    <canvas id="c" width="300" height="600"></canvas>
+    <canvas id="c" width="280" height="560"></canvas>
     <div id="score">得分: <span>0</span></div>
     <div id="mainControls">
       <button class="btn" id="startBtn" aria-label="开始" onclick="start()">⏻</button>
@@ -39,7 +39,7 @@
   </div>
   <script>
     const c = document.getElementById('c'), ctx = c.getContext('2d');
-    const COLS = 10, ROWS = 20, CELL = 30, OFFSET_X = 0, OFFSET_Y = 0;
+    const COLS = 10, ROWS = 20, CELL = 28, OFFSET_X = 0, OFFSET_Y = 0;
     const SHAPES = [[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]]];
     const COLORS = ['#00f5ff','#ffeb3b','#9c27b0','#4caf50','#f44336','#2196f3','#ff9800'];
     let board = [], piece = null, nextPiece = null, score = 0, running = 0, paused = 0, interval = null;
