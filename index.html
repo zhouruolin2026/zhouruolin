@@ -8,10 +8,24 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #0f0f23; min-height: 100vh; font-family: -apple-system, sans-serif; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; }
     .hall { width: min(390px, 100vw); }
-    .contact { margin-bottom: 14px; }
-    .contact-line { display: flex; justify-content: center; align-items: baseline; gap: 10px; line-height: 1.7; }
-    .contact-label { width: 5em; text-align: right; font-size: 0.9rem; color: #d5d5d5; }
-    .contact-value { font-size: 0.9rem; color: #d5d5d5; text-align: left; }
+    .contact {
+      margin-bottom: 14px;
+      display: grid;
+      grid-template-columns: 5em 3em 1fr;
+      gap: 4px 10px;
+      align-items: baseline;
+      justify-content: center;
+    }
+    .contact-label,
+    .contact-meta,
+    .contact-detail {
+      font-size: 0.9rem;
+      color: #d5d5d5;
+      line-height: 1.7;
+    }
+    .contact-label { text-align: right; }
+    .contact-meta { text-align: right; }
+    .contact-detail { text-align: left; overflow-wrap: anywhere; }
     h1 { font-size: 1.8rem; color: #00d4aa; margin-bottom: 20px; text-align: center; }
     .game-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .game-card { background: #1a1a2e; border: 2px solid #2a2a4a; border-radius: 12px; padding: 18px 10px; text-align: center; cursor: pointer; transition: all 0.3s; text-decoration: none; color: #fff; min-height: 132px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -24,8 +38,12 @@
 <body>
   <div class="hall">
     <div class="contact">
-      <div class="contact-line"><span class="contact-label">我在等你</span><span class="contact-value">电话：15303739551（微信同号）</span></div>
-      <div class="contact-line"><span class="contact-label"> 请联系我</span><span class="contact-value">邮箱：zhouruolin202603@126.com</span></div>
+      <span class="contact-label">我在等你</span>
+      <span class="contact-meta">电话：</span>
+      <span class="contact-detail">15303739551（微信同号）</span>
+      <span class="contact-label">请联系我</span>
+      <span class="contact-meta">邮箱：</span>
+      <span class="contact-detail">zhouruolin202603@126.com</span>
     </div>
     <h1>🎮 游戏大厅</h1>
     <div class="game-list">
